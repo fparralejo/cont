@@ -60,12 +60,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{{ URL::asset('ofertas') }}">Trabajo</a>
+          <a class="navbar-brand" href="{{ URL::asset('main') }}">Listado</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="{{ URL::asset('ofertas') }}">Ofertas</a></li>
-            <li><a href="{{ URL::asset('web') }}">Web T.</a></li>
+            <li><a href="{{ URL::asset('main') }}">Listado</a></li>
+            <li><a href="#">Web T.</a></li>
             <li><a href="{{ URL::asset('logout') }}">Salir</a></li>
           </ul>
         </div>
@@ -76,7 +76,7 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li><a href="{{ URL::asset('ofertas') }}">Ofertas</a></li>
+            <li><a href="{{ URL::asset('main') }}">Listado</a></li>
             <li><a href="#">Tareas</a></li>
             <li><a href="{{ URL::asset('logout') }}">Salir</a></li>
           </ul>

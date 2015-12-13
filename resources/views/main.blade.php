@@ -2,7 +2,8 @@
 
 
 @section('principal')
-<h2 class="page-header">Buscar Trabajo</h2>
+{{  dd($movimientos)  }}
+<h3 class="page-header">Listado</h3>
 
 <style>
     .sgsiRow:hover{
@@ -46,32 +47,20 @@
         });
 	} );
 
-//	function cambioCriterio(objeto,CriConf2){
-//		objeto.value = CriConf2.value;
-//
-//	}
 
-	function leerAsiento(id_oferta){
+	function leerAsiento(Id){
         $.ajax({
-          data:{"id_oferta":id_oferta},  
-          url: '{{ URL::asset("ofertas/show") }}',
+          data:{"Id":Id},  
+          url: '{{ URL::asset("main/show") }}',
           type:"get",
           success: function(data) {
-            var oferta = JSON.parse(data);
-            $('#id_oferta').val(oferta.id_oferta);
-            $('#oferta').val(oferta.oferta);
-            $('#descripcion').val(oferta.descripcion);
-            $('#empresa').val(oferta.empresa);
-            $('#telefono').val(oferta.telefono);
-            $('#email').val(oferta.email);
-            $("#url").val(oferta.url);
-            $('#webtrabajo').val(oferta.webtrabajo);
-            $("#tipo_contrato").val(oferta.tipo_contrato);
-            $("#duracion").val(oferta.duracion);
-            $("#jornada").val(oferta.jornada);
-            $("#salario").val(oferta.salario);
-            $("#fecha").val(oferta.fecha);
-            $("#cv_pdf").val(oferta.cv_pdf);
+            var asiento = JSON.parse(data);
+            $('#Id').val(asiento.Id);
+            $('#fecha').val(asiento.Fecha);
+            $('#movimientos').val(asiento.Movimiento);
+            $('#euros').val(asiento.Euros);
+            $('#motivos').val(asiento.Motivo);
+            $('#deudor').val(asiento.Deudor);
             //cambiar nombre del titulo del formulario
             $("#tituloForm").html('Editar Datos');
             $("#submitir").val('OK');
@@ -79,12 +68,12 @@
         });
 	}
 
-	function borrarOferta(id_oferta){
-            if (confirm("¿Desea borrar la oferta?"))
+	function borrarAsiento(Id){
+            if (confirm("¿Desea borrar este asiento?"))
             {
                 $.ajax({
-                  data:{"id_oferta":id_oferta},  
-                  url: '{{ URL::asset("ofertas/delete") }}',
+                  data:{"Id":Id},  
+                  url: '{{ URL::asset("main/delete") }}',
                   type:"get",
                   success: function(data) {
                         $('#accionTabla').html(data);
@@ -93,20 +82,11 @@
                 });
                 setTimeout(function ()
                 {
-                    document.location.href="{{URL::to('ofertas')}}";
+                    document.location.href="{{URL::to('main')}}";
                 }, 1000);
             }
 	}
 
-	function ofertaSeguimiento(id_oferta){
-            //vamos a la views de seguimiento con esta oferta
-            document.location.href="{{URL::to('seguimiento')}}/"+id_oferta;
-	}
-
-	function ofertaEntrevistas(id_oferta){
-            //vamos a la views de ofertaEntrevistas con esta oferta
-            document.location.href="{{URL::to('entrevistas')}}/"+id_oferta;
-	}
 
 	//hacer desaparecer en cartel
 	$(document).ready(function() {
@@ -115,14 +95,8 @@
 	    },3000);
 	});
 
-
-        function verPDF(pdf){
-            window.open('{{ URL::asset('pdf_cv') }}/'+pdf, '', 'scrollbars=yes,menubar=no,height=600,width=800,resizable=yes,toolbar=no,status=no,location=no');
-        }
-        
 </script>
 
-<h3>Ofertas</h3>
 
 <!-- aviso de alguna accion -->
 <div class="alert alert-success" role="alert" id="accionTabla" style="display: none; ">
@@ -150,20 +124,13 @@
     <?php
     //carga los datos en el formulario para editarlos
     $url="javascript:leerAsiento(".$movFinal->Id.");";
-//    $nombreWebT = '';
-//    foreach ($listWebT as $webT) {
-//        if($webT->id_web === $oferta->webtrabajo){
-//            $nombreWebT = $webT->nombre;
-//        }
-//    }
     ?>
         <tr>
-            <td class="sgsiRow" onClick="{{ $url }}">{{ $movFinal->Fecha }}</td>
+            <td class="sgsiRow" onClick="{{ $url }}">{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$movFinal->Fecha)->format('d/m/Y') }}</td>
             <td class="sgsiRow" onClick="{{ $url }}">{{ $movimientos[$movFinal->Movimiento] }}</td>
             <td class="sgsiRow" onClick="{{ $url }}">{{ $motivos[$movFinal->Motivo] }}</td>
             <td class="sgsiRow" onClick="{{ $url }}">{{ $movFinal->Euros }}</td>
             <td class="sgsiRow" onClick="{{ $url }}">{{ $deudores[$movFinal->Deudor] }}</td>
-<!--            <td class="sgsiRow" onClick="{{ $url }}">{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$oferta->fecha)->format('d/m/Y') }}</td>-->
             <td>
                 <button type="button" onclick="borrarAsiento({{ $movFinal->Id }})" class="btn btn-xs btn-danger">Borrar</button>
             </td>
@@ -184,101 +151,9 @@
 }
 </style>
 
-<form role="form" class="form-horizontal" id="productForm" name="productForm" action="{{ URL::asset('main') }}" method="post">
+<form role="form" class="form-horizontal" id="asientoForm" name="asientoForm" action="{{ URL::asset('main') }}" method="post">
      CSRF Token 
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="oferta">Oferta:</label><input type="text" class="form-control" id="oferta" name="oferta" maxlength="100">
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-8">
-            <div class="form-group">
-                <label for="descripcion">Descripción:</label>
-                <textarea class="form-control" rows="4" name="descripcion" id="descripcion"></textarea>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="empresa">Empresa:</label><input type="text" class="form-control" id="empresa" name="empresa" maxlength="75">
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-5">
-            <div class="form-group">
-                <label for="telefono">Teléfono:</label><input type="text" class="form-control" id="telefono" name="telefono" maxlength="20">
-            </div>
-        </div>
-        <div class="col-md-1">
-        </div>
-        <div class="col-md-5">
-            <div class="form-group">
-                <label for="email">Email:</label><input type="email" class="form-control" id="email" name="email" maxlength="100">
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-11">
-            <div class="form-group">
-                <label for="url">Url:</label><input type="text" class="form-control" id="url" name="url" maxlength="200">
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="webtrabajo">Web Trabajo:</label>
-	        <select class="form-control" name="webtrabajo" id="webtrabajo">
-                    <option value=""></option>
-                    @foreach ($listWebT as $webT)
-                    <option value="{{ $webT->id_web }}">{{ $webT->nombre }}</option>
-                    @endforeach
-	        </select>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-5">
-            <div class="form-group">
-                <label for="tipo_contrato">Tipo Contrato:</label><input type="text" class="form-control" id="tipo_contrato" name="tipo_contrato" maxlength="30">
-            </div>
-        </div>
-        <div class="col-md-1">
-        </div>
-        <div class="col-md-5">
-            <div class="form-group">
-                <label for="duracion">Duración:</label><input type="text" class="form-control" id="duracion" name="duracion" maxlength="25">
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-5">
-            <div class="form-group">
-                <label for="jornada">Jornada:</label><input type="text" class="form-control" id="jornada" name="jornada" maxlength="25">
-            </div>
-        </div>
-        <div class="col-md-1">
-        </div>
-        <div class="col-md-5">
-            <div class="form-group">
-                <label for="salario">Salario:</label><input type="text" class="form-control" id="salario" name="salario" maxlength="20">
-            </div>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-md-5">
@@ -313,25 +188,61 @@
         <div class="col-md-1">
         </div>
         <div class="col-md-5">
-            <label for="cv_pdf">CV PDF:</label>
-            <select class="form-control" id="cv_pdf" name="cv_pdf">
-                <option value=""></option>
-                <option value="CV01.pdf">CV01.pdf</option>
+            <label for="movimientos">Ingreso/Gasto:</label>
+            <select class="form-control" id="movimientos" name="movimientos">
+                <option value="1">Ingreso</option>
+                <option value="2">Gasto</option>
             </select>
         </div>
     </div>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="euros">Importe (Euros):</label><input type="text" class="form-control" id="euros" name="euros" maxlength="15">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="motivos">Motivo:</label>
+	        <select class="form-control" name="motivos" id="motivos">
+                    @foreach ($motivos as $motivo)
+                    <option value="{{ $motivo->IdMot }}">{{ $motivo->motivo }}</option>
+                    @endforeach
+	        </select>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="deudor">Deudor/Pagador:</label>
+	        <select class="form-control" name="deudor" id="deudor">
+                    @foreach ($deudores as $deudor)
+                    <option value="{{ $deudor->IdDeu }}">{{ $deudor->deudor }}</option>
+                    @endforeach
+	        </select>
+            </div>
+        </div>
+    </div>
+    
+    
     <br/>
 
 
 
-    <input type="hidden" id="id_oferta" name="id_oferta" value="" />
+    <input type="hidden" id="Id" name="Id" value="" />
     <input type="hidden" id="id_usuario" name="id_usuario" value="{{ Session::get('id') }}" />
     <input type="submit" id="submitir" class="btn btn-default" value="Nuevo"/>
 </form>
 
 <script>
 $(document).ready(function() {
-    $('#productForm').formValidation({
+    $('#asientoForm').formValidation({
         framework: 'bootstrap',
         icon: {
             valid: 'glyphicon glyphicon-ok',
@@ -339,34 +250,13 @@ $(document).ready(function() {
             validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
-//            id_oferta: {
-//                validators: {
-//                    notEmpty: {
-//                        message: 'El Id Oferta es requerido'
-//                    },
-//                    numeric: {
-//                        message: 'El Id Oferta tiene que ser un valor numérico'
-//                    }
-//                }
-//            },
-            oferta: {
+            euros: {
                 validators: {
                     notEmpty: {
-                        message: 'La Oferta de trabajo es requerida'
-                    }
-                }
-            },
-            descripcion: {
-                validators: {
-                    notEmpty: {
-                        message: 'La descripción de trabajo es requerida'
-                    }
-                }
-            },
-            empresa: {
-                validators: {
-                    notEmpty: {
-                        message: 'La empresa de trabajo es requerida'
+                        message: 'El importe es requerido'
+                    },
+                    numeric: {
+                        message: 'El importe tiene que ser un valor numérico'
                     }
                 }
             }

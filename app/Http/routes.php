@@ -32,9 +32,9 @@ Route::get('logout', 'loginController@logout');
 
 
 Route::get('main', 'mainController@main');
-Route::get('ofertas/show', 'ofertasController@ofertasShow');
-Route::get('ofertas/delete', 'ofertasController@ofertasDelete');
-Route::post('ofertas', 'ofertasController@ofertasCreateEdit');
+Route::get('main/show', 'mainController@mainShow');
+Route::get('main/delete', 'mainController@mainDelete');
+Route::post('main', 'mainController@mainCreateEdit');
 
 
 ////seguimiento
