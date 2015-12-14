@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="{{URL::asset('favicon.ico')}}">
 
-    <title>Cuentas generales</title>
+    <title>Cuentas Generales</title>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
@@ -19,6 +19,8 @@
     
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.0/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="{{URL::asset('js/docs.min.js')}}"></script>
@@ -38,6 +40,10 @@
     <link href="{{URL::asset('css/bootstrap-theme.min.css')}}" rel="stylesheet">
     <link href="{{URL::asset('css/dashboard.css')}}" rel="stylesheet">
 
+    <!--autocomplete-->
+<!--    <script src="{{URL::asset('js/typeahead.js')}}"></script>
+    <link href="{{URL::asset('css/typeahead.css')}}" rel="stylesheet">-->
+    
     @yield('head')
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->

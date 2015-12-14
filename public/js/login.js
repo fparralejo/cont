@@ -11,8 +11,8 @@ $(document).ready(function(){
 
     $('#loginform').submit(function(e){
         var thisForm = $(this); 
-        var userinput = $('#username');
-        var passinput = $('#password');
+        var userinput = $('#nombre');
+        var passinput = $('#clave');
         if(userinput.val() == '' || passinput.val() == '') {
             highlight_error(userinput);
             highlight_error(passinput);
@@ -27,7 +27,7 @@ $(document).ready(function(){
 		
     });
 
-    $('#username, #password').on('keyup',function(){
+    $('#nombre, #clave').on('keyup',function(){
         highlight_error($(this));
     }).focus(function(){
         highlight_error($(this));

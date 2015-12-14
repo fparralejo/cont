@@ -135,10 +135,52 @@ class mainController extends Controller {
                     $deudores[$deu->IdDeu]=$deu->deudor;
             }
 
-            return view('main')->with('mfinal',$mfinal)->with('movimientos',$movimientos)->with('motivos',$motivos)->with('deudores',$deudores);
+            return view('main')->with('mfinal',$mfinal)->with('movimientos',$movimientos)->with('motivos',$motivos)->with('deudores',$deudores)
+                                ->with('motivosI',$motivosI)->with('deudoresI',$deudoresI);
         }
 
         //OK
+        public function listadoMotivos(){
+            $term = Input::get('term');
+            
+            $listarMotivos = motivos::where('motivo','LIKE','%'.$term.'%')->get();
+            
+            //pasarlo a JSON
+            //primero lo paso a array
+            $listar = "";
+            foreach ($listarMotivos as $motivo) {
+                $listar[] = array("value"=>$motivo->motivo);
+            }
+            
+            //devuelvo el array en JSON
+            echo json_encode($listar);
+        }
+        
+        //OK
+        public function existeMotivo(){
+            
+            $existeMotivo = motivos::where('motivo','=',Input::get('motivo'))->count();
+            
+            if($existeMotivo>0){
+                echo "SI";
+            }else{
+                echo "NO";
+            }
+        }
+
+        //OK
+        public function nuevoMotivo(){
+            return view('motivo.main');
+        }
+
+        //OK
+        public function motivoCreateEdit(Request $request){
+            echo "OK";die;
+        }
+
+        
+        
+        //NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 	public function mainShow()
         {
             

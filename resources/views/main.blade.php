@@ -2,7 +2,6 @@
 
 
 @section('principal')
-{{  dd($movimientos)  }}
 <h3 class="page-header">Listado</h3>
 
 <style>
@@ -33,7 +32,7 @@
                 }
             },
             "bSort":true,
-            "aaSorting": [[ 0, "asc" ]],
+            "aaSorting": [[ 0, "desc" ]],
             "aoColumns": [
                 { "sType": 'string' },
                 { "sType": 'string' },
@@ -87,12 +86,44 @@
             }
 	}
 
+        function existeMotivo(objeto){
+            $.ajax({
+              data:{"motivo":objeto.value},  
+              url: 'main/existeMotivo',
+              type:"get",
+              success: function(data) {
+                if(data === 'NO'){
+                    objeto.value = '';
+                }
+              }
+            });
+        }
+
+//        function nuevoMotivo(){
+//            window.open("main/nuevoMotivo","miventana","width=300,height=200,menubar=no");
+//        }
+        
+        
 
 	//hacer desaparecer en cartel
 	$(document).ready(function() {
+            
+            
 	    setTimeout(function() {
 	        $("#accionTabla2").fadeOut(1500);
 	    },3000);
+
+            //autocomplete de Motivos
+            $("#motivos").autocomplete({
+                source: 'main/motivosListado'
+            }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+                var txt=item.value;
+                var inner_html = "<a><font color='Teal'>"+txt+"</font></a>";
+                return $( "<li></li>" )
+                    .data( "item.autocomplete", item )
+                    .append(inner_html)
+                    .appendTo( ul );
+            };
 	});
 
 </script>
@@ -116,7 +147,7 @@
             <th>Motivo</th>
             <th>Euros</th>
             <th>Deudor</th>
-            <th>Baja</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -124,12 +155,19 @@
     <?php
     //carga los datos en el formulario para editarlos
     $url="javascript:leerAsiento(".$movFinal->Id.");";
+    $fecha = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$movFinal->Fecha)->format('d/m/Y');
+    $fechaTxt = explode('/',$fecha);
+    $fechaTxt = $fechaTxt[2].$fechaTxt[1].$fechaTxt[0];
     ?>
         <tr>
-            <td class="sgsiRow" onClick="{{ $url }}">{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$movFinal->Fecha)->format('d/m/Y') }}</td>
+            <td class="sgsiRow" onClick="{{ $url }}"><!-- {{ $fechaTxt }} --> {{ $fecha }}</td>
             <td class="sgsiRow" onClick="{{ $url }}">{{ $movimientos[$movFinal->Movimiento] }}</td>
             <td class="sgsiRow" onClick="{{ $url }}">{{ $motivos[$movFinal->Motivo] }}</td>
-            <td class="sgsiRow" onClick="{{ $url }}">{{ $movFinal->Euros }}</td>
+            <td class="sgsiRow" onClick="{{ $url }}">
+                <div align="right">
+                    {{ $movFinal->Euros }}
+                </div>
+            </td>
             <td class="sgsiRow" onClick="{{ $url }}">{{ $deudores[$movFinal->Deudor] }}</td>
             <td>
                 <button type="button" onclick="borrarAsiento({{ $movFinal->Id }})" class="btn btn-xs btn-danger">Borrar</button>
@@ -152,7 +190,7 @@
 </style>
 
 <form role="form" class="form-horizontal" id="asientoForm" name="asientoForm" action="{{ URL::asset('main') }}" method="post">
-     CSRF Token 
+     <!--CSRF Token--> 
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
     <div class="row">
@@ -208,12 +246,14 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="motivos">Motivo:</label>
-	        <select class="form-control" name="motivos" id="motivos">
-                    @foreach ($motivos as $motivo)
-                    <option value="{{ $motivo->IdMot }}">{{ $motivo->motivo }}</option>
-                    @endforeach
-	        </select>
+                <input type="text" class="form-control" id="motivos" name="motivos" onblur="existeMotivo(this);">
             </div>
+        </div>
+        <div class="col-md-1">
+                <label for="">&nbsp;</label>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#formMotivo">
+                    Nuevo
+                </button>
         </div>
     </div>
     
@@ -222,7 +262,7 @@
             <div class="form-group">
                 <label for="deudor">Deudor/Pagador:</label>
 	        <select class="form-control" name="deudor" id="deudor">
-                    @foreach ($deudores as $deudor)
+                    @foreach ($deudoresI as $deudor)
                     <option value="{{ $deudor->IdDeu }}">{{ $deudor->deudor }}</option>
                     @endforeach
 	        </select>
@@ -240,6 +280,87 @@
     <input type="submit" id="submitir" class="btn btn-default" value="Nuevo"/>
 </form>
 
+
+<!-- Modal Motivo -->
+<div class="modal fade" id="formMotivo" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Motivos
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form class="form-horizontal" id="motivoForm" role="form" action="{{ URL::asset('main/motivo') }}" method="post">
+                    <!--CSRF Token--> 
+                   <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                   
+                  <div class="form-group">
+                    <label  class="col-sm-2 control-label"
+                              for="motivo">Nuevo Motivo</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" 
+                        id="motivo" name="motivo" placeholder="Nuevo Motivo"/>
+                    </div>
+                  </div>
+                    
+<!--                  <div class="form-group">
+                    <label class="col-sm-2 control-label"
+                          for="inputPassword3" >Password</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control"
+                            id="inputPassword3" placeholder="Password"/>
+                    </div>
+                  </div>
+                    
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <div class="checkbox">
+                        <label>
+                            <input type="checkbox"/> Remember me
+                        </label>
+                      </div>
+                    </div>
+                  </div>-->
+                    
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-default">OK</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+            
+            <!-- Modal Footer -->
+<!--            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Close
+                </button>
+                <button type="button" class="btn btn-primary">
+                    Save changes
+                </button>
+            </div>-->
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!--validaciones-->
 <script>
 $(document).ready(function() {
     $('#asientoForm').formValidation({
@@ -259,11 +380,42 @@ $(document).ready(function() {
                         message: 'El importe tiene que ser un valor numérico'
                     }
                 }
+            },
+            motivos: {
+                validators: {
+                    notEmpty: {
+                        message: 'El motivo es requerido'
+                    }
+                }
             }
         }
     });
+    
+
+    $('#motivoForm').formValidation({
+        framework: 'bootstrap',
+        icon: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            motivo: {
+                validators: {
+                    notEmpty: {
+                        message: 'El motivo es requerido'
+                    }
+                }
+            }
+        }
+    });
+
+
+
+
 });
 </script>
+
 
 @stop
 
