@@ -35,10 +35,14 @@ Route::get('main', 'mainController@main');
 Route::get('main/show', 'mainController@mainShow');
 Route::get('main/delete', 'mainController@mainDelete');
 Route::post('main', 'mainController@mainCreateEdit');
+
 Route::get('main/motivosListado', 'mainController@listadoMotivos');
 Route::get('main/existeMotivo', 'mainController@existeMotivo');
-Route::get('main/nuevoMotivo', 'mainController@nuevoMotivo');
-Route::post('main/motivo', 'mainController@motivoCreateEdit');
+Route::post('main/nuevoMotivo', 'mainController@motivoCreate');
+
+Route::get('main/deudorListado', 'mainController@listadoDeudores');
+Route::get('main/existeDeudor', 'mainController@existeDeudor');
+Route::post('main/nuevoDeudor', 'mainController@deudorCreate');
 
 
 ////seguimiento

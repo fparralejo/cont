@@ -158,7 +158,6 @@ class mainController extends Controller {
         
         //OK
         public function existeMotivo(){
-            
             $existeMotivo = motivos::where('motivo','=',Input::get('motivo'))->count();
             
             if($existeMotivo>0){
@@ -169,29 +168,105 @@ class mainController extends Controller {
         }
 
         //OK
-        public function nuevoMotivo(){
-            return view('motivo.main');
+        public function motivoCreate(Request $request){
+            //busco si existe o no este motivo, si existe no se debe dar de alta e indicarlo
+            $existeMotivo = motivos::where('motivo','=',$request->motivo)->count();
+            if($existeMotivo>0){
+                return redirect('main')->with('errors', 'ERROR: este motivo YA existe');
+            }else{
+                $motivo = new motivos();
+                $motivo->motivo = $request->motivo;
+
+                if($motivo->save()){
+                    return redirect('main')->with('errors', 'Se ha dado de alta correctamente un nuevo motivo.');
+                }else{
+                    return redirect('main')->with('errors', 'ERROR: al dar de alta un motivo nuevo.');
+                }
+            }
+        }
+
+
+        //OK
+        public function listadoDeudores(){
+            $term = Input::get('term');
+            
+            $listarDeudores = deudores::where('deudor','LIKE','%'.$term.'%')->get();
+            
+            //pasarlo a JSON
+            //primero lo paso a array
+            $listar = "";
+            foreach ($listarDeudores as $deudor) {
+                $listar[] = array("value"=>$deudor->deudor);
+            }
+            
+            //devuelvo el array en JSON
+            echo json_encode($listar);
+        }
+        
+        //OK
+        public function existeDeudor(){
+            $existeDeudor = deudores::where('deudor','=',Input::get('deudor'))->count();
+            
+            if($existeDeudor>0){
+                echo "SI";
+            }else{
+                echo "NO";
+            }
         }
 
         //OK
-        public function motivoCreateEdit(Request $request){
-            echo "OK";die;
-        }
+        public function deudorCreate(Request $request){
+            //busco si existe o no este motivo, si existe no se debe dar de alta e indicarlo
+            $existeDeudor = deudores::where('deudor','=',$request->deudor)->count();
+            if($existeDeudor>0){
+                return redirect('main')->with('errors', 'ERROR: este deudor YA existe');
+            }else{
+                $deudor = new deudores();
+                $deudor->deudor = $request->deudor;
 
+                if($deudor->save()){
+                    return redirect('main')->with('errors', 'Se ha dado de alta correctamente un nuevo editor.');
+                }else{
+                    return redirect('main')->with('errors', 'ERROR: al dar de alta un editor nuevo.');
+                }
+            }
+        }
+        
         
         
         //NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 	public function mainShow()
         {
             
+//            $movimientosfinal = \DB::select("
+//                                            SELECT F.Id,DATE_FORMAT(F.Fecha,'%d/%m/%Y') AS Fecha,F.Movimiento,M.motivo,F.Euros,D.deudor
+//                                            FROM contfpp_movimientos_final F, contfpp_deudores D, contfpp_motivos M
+//                                            WHERE F.Motivo=M.IdMot AND F.Deudor=D.IdDeu
+//                                            AND F.Id=".Input::get('Id')."
+//                                            ");
             
-//            $oferta = oferta::find(Input::get('id_oferta'));
-//            
-//            //cambio el formato de la fecha
-//            $oferta->fecha = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$oferta->fecha)->format('d/m/Y');
-//
-//            //devuelvo la respuesta al send
-//            echo json_encode($oferta);
+            
+            
+            $movimientosfinal = movimientosfinal::find(Input::get('Id'));
+            
+            //cambio el formato de la fecha
+            $movimientosfinal->Fecha = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$movimientosfinal->Fecha)->format('d/m/Y');
+
+//            //preparo el array para el JSON a devolver
+//            $datosFinales['Id'] = $movimientosfinal->Id;
+//            $datosFinales['Fecha'] = $movimientosfinal->Fecha;
+//            $datosFinales['Movimiento'] = $movimientosfinal->Movimiento;
+//            $datosFinales['Euros'] = $movimientosfinal->Euros;
+//            //busco el nombre motivo
+//            $motivo = motivos::where('IdMot','=',$movimientosfinal->Motivo)->get();
+//            $movimientosfinal->Motivo = $motivo->motivo;
+//            //busco el nombre deudor
+//            $deudor = deudores::where('IdDeu','=',$movimientosfinal->Deudor)->get();
+//            $movimientosfinal->Deudor = $deudor->deudor;
+//            $datos[] = $datosFinales;
+
+            //devuelvo la respuesta al send
+            echo json_encode($movimientosfinal);
         }
 
         //OK

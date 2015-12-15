@@ -54,6 +54,7 @@
           type:"get",
           success: function(data) {
             var asiento = JSON.parse(data);
+            //var asiento = data;
             $('#Id').val(asiento.Id);
             $('#fecha').val(asiento.Fecha);
             $('#movimientos').val(asiento.Movimiento);
@@ -99,9 +100,19 @@
             });
         }
 
-//        function nuevoMotivo(){
-//            window.open("main/nuevoMotivo","miventana","width=300,height=200,menubar=no");
-//        }
+        function existeDeudor(objeto){
+            $.ajax({
+              data:{"deudor":objeto.value},  
+              url: 'main/existeDeudor',
+              type:"get",
+              success: function(data) {
+                if(data === 'NO'){
+                    objeto.value = '';
+                }
+              }
+            });
+        }
+
         
         
 
@@ -124,6 +135,19 @@
                     .append(inner_html)
                     .appendTo( ul );
             };
+            
+            //autocomplete de Deudores
+            $("#deudor").autocomplete({
+                source: 'main/deudorListado'
+            }).data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+                var txt=item.value;
+                var inner_html = "<a><font color='Teal'>"+txt+"</font></a>";
+                return $( "<li></li>" )
+                    .data( "item.autocomplete", item )
+                    .append(inner_html)
+                    .appendTo( ul );
+            };
+            
 	});
 
 </script>
@@ -154,7 +178,7 @@
     @foreach ($mfinal as $movFinal)
     <?php
     //carga los datos en el formulario para editarlos
-    $url="javascript:leerAsiento(".$movFinal->Id.");";
+    $url="javascript:leerAsiento('".$movFinal->Id."');";
     $fecha = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$movFinal->Fecha)->format('d/m/Y');
     $fechaTxt = explode('/',$fecha);
     $fechaTxt = $fechaTxt[2].$fechaTxt[1].$fechaTxt[0];
@@ -260,16 +284,17 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="deudor">Deudor/Pagador:</label>
-	        <select class="form-control" name="deudor" id="deudor">
-                    @foreach ($deudoresI as $deudor)
-                    <option value="{{ $deudor->IdDeu }}">{{ $deudor->deudor }}</option>
-                    @endforeach
-	        </select>
+                <label for="deudor">Deudor:</label>
+                <input type="text" class="form-control" id="deudor" name="deudor" onblur="existeDeudor(this);">
             </div>
         </div>
+        <div class="col-md-1">
+                <label for="">&nbsp;</label>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#formDeudor">
+                    Nuevo
+                </button>
+        </div>
     </div>
-    
     
     <br/>
 
@@ -281,7 +306,7 @@
 </form>
 
 
-<!-- Modal Motivo -->
+<!-- Modal Motivos -->
 <div class="modal fade" id="formMotivo" tabindex="-1" role="dialog" 
      aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -301,14 +326,14 @@
             <!-- Modal Body -->
             <div class="modal-body">
                 
-                <form class="form-horizontal" id="motivoForm" role="form" action="{{ URL::asset('main/motivo') }}" method="post">
+                <form class="form-horizontal" id="motivoForm" name="motivoForm" role="form" action="{{ URL::asset('main/nuevoMotivo') }}" method="post">
                     <!--CSRF Token--> 
                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
                    
                   <div class="form-group">
-                    <label  class="col-sm-2 control-label"
+                    <label  class="col-sm-4 control-label"
                               for="motivo">Nuevo Motivo</label>
-                    <div class="col-sm-10">
+                    <div class="col-sm-8">
                         <input type="text" class="form-control" 
                         id="motivo" name="motivo" placeholder="Nuevo Motivo"/>
                     </div>
@@ -356,6 +381,49 @@
 </div>
 
 
+<!-- Modal Deudores -->
+<div class="modal fade" id="formDeudor" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Deudores
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+                <form class="form-horizontal" id="deudorForm" name="deudorForm" role="form" action="{{ URL::asset('main/nuevoDeudor') }}" method="post">
+                    <!--CSRF Token--> 
+                   <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                   
+                  <div class="form-group">
+                    <label  class="col-sm-4 control-label"
+                              for="deudor">Nuevo Deudor</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" 
+                        id="motivo" name="deudor" placeholder="Nuevo Deudor"/>
+                    </div>
+                  </div>
+                    
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button type="submit" class="btn btn-default">OK</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -387,6 +455,13 @@ $(document).ready(function() {
                         message: 'El motivo es requerido'
                     }
                 }
+            },
+            deudor: {
+                validators: {
+                    notEmpty: {
+                        message: 'El deudor es requerido'
+                    }
+                }
             }
         }
     });
@@ -411,6 +486,23 @@ $(document).ready(function() {
     });
 
 
+    $('#deudorForm').formValidation({
+        framework: 'bootstrap',
+        icon: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            deudor: {
+                validators: {
+                    notEmpty: {
+                        message: 'El deudor es requerido'
+                    }
+                }
+            }
+        }
+    });
 
 
 });
