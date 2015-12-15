@@ -232,44 +232,23 @@ class mainController extends Controller {
             }
         }
         
-        
-        
-        //NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+        //OK
 	public function mainShow()
         {
             
-//            $movimientosfinal = \DB::select("
-//                                            SELECT F.Id,DATE_FORMAT(F.Fecha,'%d/%m/%Y') AS Fecha,F.Movimiento,M.motivo,F.Euros,D.deudor
-//                                            FROM contfpp_movimientos_final F, contfpp_deudores D, contfpp_motivos M
-//                                            WHERE F.Motivo=M.IdMot AND F.Deudor=D.IdDeu
-//                                            AND F.Id=".Input::get('Id')."
-//                                            ");
+            $movimientosfinal = \DB::select("
+                                            SELECT F.Id,DATE_FORMAT(F.Fecha,'%d/%m/%Y') AS Fecha,F.Movimiento,M.motivo,F.Euros,D.deudor
+                                            FROM contfpp_movimientos_final F, contfpp_deudores D, contfpp_motivos M
+                                            WHERE F.Motivo=M.IdMot AND F.Deudor=D.IdDeu
+                                            AND F.Id=".Input::get('Id')."
+                                            ");
             
-            
-            
-            $movimientosfinal = movimientosfinal::find(Input::get('Id'));
-            
-            //cambio el formato de la fecha
-            $movimientosfinal->Fecha = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$movimientosfinal->Fecha)->format('d/m/Y');
-
-//            //preparo el array para el JSON a devolver
-//            $datosFinales['Id'] = $movimientosfinal->Id;
-//            $datosFinales['Fecha'] = $movimientosfinal->Fecha;
-//            $datosFinales['Movimiento'] = $movimientosfinal->Movimiento;
-//            $datosFinales['Euros'] = $movimientosfinal->Euros;
-//            //busco el nombre motivo
-//            $motivo = motivos::where('IdMot','=',$movimientosfinal->Motivo)->get();
-//            $movimientosfinal->Motivo = $motivo->motivo;
-//            //busco el nombre deudor
-//            $deudor = deudores::where('IdDeu','=',$movimientosfinal->Deudor)->get();
-//            $movimientosfinal->Deudor = $deudor->deudor;
-//            $datos[] = $datosFinales;
 
             //devuelvo la respuesta al send
             echo json_encode($movimientosfinal);
         }
 
-        //OK
+        //NOOO
 	public function ofertasDelete(){
             $oferta = oferta::find(Input::get('id_oferta'));
             $IdOferta = $oferta->id_oferta;
@@ -284,53 +263,45 @@ class mainController extends Controller {
 	}
         
         //OK
-        public function ofertasCreateEdit(Request $request){
-            //echo "he llegado";die;
+        public function mainCreateEdit(Request $request){
             
             //si es nuevo este valor viene vacio
-            if($request->id_oferta === ""){
-                $oferta = new oferta();
-                $ok = 'Se ha dado de alta correctamente la oferta.';
-                $error = 'ERROR al dar de alta la oferta.';
+            if($request->Id === ""){
+                $asiento = new movimientosfinal();
+                $ok = 'Se ha dado de alta correctamente el asiento.';
+                $error = 'ERROR al dar de alta el asiento.';
             }
-            //sino se edita este id_oferta
+            //sino se edita este Id
             else{
-                $oferta = oferta::find($request->id_oferta);
-                $ok = 'Se ha editado correctamente la oferta.';
-                $error = 'ERROR al edtar la oferta.';
+                $asiento = movimientosfinal::find($request->Id);
+                $ok = 'Se ha editado correctamente el asiento.';
+                $error = 'ERROR al edtar el asiento.';
             }
 
-            $oferta->id_oferta = $request->id_oferta;
-            $oferta->oferta = $request->oferta;
-            $oferta->descripcion = $request->descripcion;
-            $oferta->empresa = $request->empresa;
-            $oferta->telefono = $request->telefono;
-            $oferta->email = $request->email;
-            $oferta->url = $request->url;
-            $oferta->webtrabajo = $request->webtrabajo;
-            $oferta->tipo_contrato = $request->tipo_contrato;
-            $oferta->duracion = $request->duracion;
-            $oferta->jornada = $request->jornada;
-            $oferta->salario = $request->salario;
-            
             //compruebo que la fecha no venga vacia, si es asi saco la fecha de hoy
             $fecha = $request->fecha;
             if($fecha === ''){
                 $fecha = date('d/m/Y');
             }
             $fecha = \Carbon\Carbon::createFromFormat('d/m/Y',$fecha)->format('Y-m-d H:i:s');
-            $oferta->fecha = $fecha;
+            $asiento->Fecha = $fecha;
             
-            $oferta->cv_pdf = $request->cv_pdf;
-            $oferta->id_usuario = Session::get('id');
-            $oferta->estado = "1";
-
-            //var_dump($oferta);die;
+            $asiento->Movimiento = $request->movimientos;
+            $asiento->Euros = $request->euros;
             
-            if($oferta->save()){
-                return redirect('ofertas')->with('errors', $ok);
+            //ahora busco el IdMot segun su motivo
+            $motivo = motivos::where('motivo','=',$request->motivos)->get();
+            //var_dump($motivo[0]->IdMot);die;
+            $asiento->Motivo = $motivo[0]->IdMot;
+            
+            //ahora busco el IdDeu segun su deudor
+            $deudor = deudores::where('deudor','=',$request->deudor)->get();
+            $asiento->Deudor = $deudor[0]->IdDeu;
+            
+            if($asiento->save()){
+                return redirect('main')->with('errors', $ok);
             }else{
-                return redirect('ofertas')->with('errors', $error);
+                return redirect('main')->with('errors', $error);
             }
         }
         

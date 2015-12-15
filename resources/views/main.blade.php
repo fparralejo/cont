@@ -55,12 +55,12 @@
           success: function(data) {
             var asiento = JSON.parse(data);
             //var asiento = data;
-            $('#Id').val(asiento.Id);
-            $('#fecha').val(asiento.Fecha);
-            $('#movimientos').val(asiento.Movimiento);
-            $('#euros').val(asiento.Euros);
-            $('#motivos').val(asiento.Motivo);
-            $('#deudor').val(asiento.Deudor);
+            $('#Id').val(asiento[0].Id);
+            $('#fecha').val(asiento[0].Fecha);
+            $('#movimientos').val(asiento[0].Movimiento);
+            $('#euros').val(asiento[0].Euros);
+            $('#motivos').val(asiento[0].motivo);
+            $('#deudor').val(asiento[0].deudor);
             //cambiar nombre del titulo del formulario
             $("#tituloForm").html('Editar Datos');
             $("#submitir").val('OK');
@@ -153,7 +153,7 @@
 </script>
 
 
-<!-- aviso de alguna accion -->
+ aviso de alguna accion 
 <div class="alert alert-success" role="alert" id="accionTabla" style="display: none; ">
 </div>
 
@@ -301,7 +301,6 @@
 
 
     <input type="hidden" id="Id" name="Id" value="" />
-    <input type="hidden" id="id_usuario" name="id_usuario" value="{{ Session::get('id') }}" />
     <input type="submit" id="submitir" class="btn btn-default" value="Nuevo"/>
 </form>
 
@@ -339,7 +338,7 @@
                     </div>
                   </div>
                     
-<!--                  <div class="form-group">
+                  <div class="form-group">
                     <label class="col-sm-2 control-label"
                           for="inputPassword3" >Password</label>
                     <div class="col-sm-10">
@@ -356,7 +355,7 @@
                         </label>
                       </div>
                     </div>
-                  </div>-->
+                  </div>
                     
                   <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
@@ -365,23 +364,12 @@
                   </div>
                 </form>
             </div>
-            
-            <!-- Modal Footer -->
-<!--            <div class="modal-footer">
-                <button type="button" class="btn btn-default"
-                        data-dismiss="modal">
-                            Close
-                </button>
-                <button type="button" class="btn btn-primary">
-                    Save changes
-                </button>
-            </div>-->
         </div>
     </div>
 </div>
 
 
-<!-- Modal Deudores -->
+ <!--Modal Deudores--> 
 <div class="modal fade" id="formDeudor" tabindex="-1" role="dialog" 
      aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
