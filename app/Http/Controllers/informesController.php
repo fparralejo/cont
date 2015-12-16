@@ -13,7 +13,7 @@ use App\seguimiento;
 
 use Illuminate\Http\Request;
 
-class seguimientoController extends Controller {
+class informesController extends Controller {
 
 	
 	/**
@@ -90,7 +90,97 @@ class seguimientoController extends Controller {
 		//
 	}
 
+        
+        //OK
+	public function infUltdias($dias)
+        {
+            //control de sesion
+            $login = new loginController();
+            if (!$login->getControl()) {
+                return redirect('/')->with('login_errors', '<font color="#ff0000">La sesión a expirado. Vuelva a logearse..</font>');
+            }
 
+            //var_dump($dias);die;
+
+            //fecha menos $dias
+            $fecha=date('d/m/Y',mktime(0,0,0,date('m'),date('d')-$dias,date('Y')));
+            $fecha=explode('/',$fecha);
+            $fechaF=$fecha[2].'-'.$fecha[1].'-'.$fecha[0].' 00:00:00';
+            
+            $result = \DB::table('contfpp_movimientos_final')->leftjoin('contfpp_deudores','contfpp_deudores.IdDeu','=','contfpp_movimientos_final.Deudor')
+                                                          ->leftjoin('contfpp_motivos','contfpp_motivos.IdMot','=','contfpp_movimientos_final.Motivo')
+                                                          ->leftjoin('contfpp_movimientos','contfpp_movimientos.IdMov','=','contfpp_movimientos_final.Movimiento')
+                                                          ->where("contfpp_movimientos_final.Fecha",'>=',"$fechaF")
+                                                          ->get(array("contfpp_motivos.motivo",\DB::raw("IF(contfpp_movimientos.movimiento='Ingreso',contfpp_movimientos_final.Euros,0) AS Ingreso"),
+                                                                      \DB::raw("IF(contfpp_movimientos.movimiento='Gasto',contfpp_movimientos_final.Euros,0) AS Gasto"),'contfpp_deudores.deudor'));
+            
+            
+            
+        
+        
+            $resultadoInt = array();
+            foreach ($result as $key => $value) {
+                $resultadoInt[$key]['motivo'] = $value->motivo;
+                $resultadoInt[$key]['Ingreso'] = $value->Ingreso;
+                $resultadoInt[$key]['Gasto'] = $value->Gasto;
+                $resultadoInt[$key]['deudor'] = $value->deudor;
+            }         
+
+            $arResult='';
+            //resulmir por motivos
+            foreach($resultadoInt as $motivo){
+                //compruebo si $resultado tiene algun dato (es array)
+                if(is_array($arResult)){
+                    //si lo es
+                    //compruebo si existe este motivo
+                    $encontrado='NO';
+                    //recorro el array $resultado y  veo si hay algun motivo con el mismo nombre que $motivo[motivo]
+                    for($i=0;$i<count($arResult);$i++){
+                        if($motivo['motivo']===$arResult[$i]['motivo']){
+                            //si lo hay le sumo los valores
+                            $arResult[$i]['Ingreso']=$arResult[$i]['Ingreso']+$motivo['Ingreso'];
+                            $arResult[$i]['Gasto']=$arResult[$i]['Gasto']+$motivo['Gasto'];
+                            //y salgo del bucle
+                            $encontrado='SI';
+                            break;
+                        }
+                    }
+                    //ahora compruebo si en el anterior bucle se encontro o no
+                    if($encontrado==='NO'){
+                        //añado un nuevo registro con este motivo
+                        $arResult[]=array(
+                            "motivo"=>$motivo['motivo'],
+                            "Ingreso"=>$motivo['Ingreso'],
+                            "Gasto"=>$motivo['Gasto'],
+                            "deudor"=>$motivo['deudor'],
+                        );
+                    }
+                }else{
+                    $arResult[]=array(
+                        "motivo"=>$motivo['motivo'],
+                        "Ingreso"=>$motivo['Ingreso'],
+                        "Gasto"=>$motivo['Gasto'],
+                        "deudor"=>$motivo['deudor'],
+                    );
+                }
+            }
+            
+            //var_dump($arResult);die;
+        
+            return view('asientos.informedias')->with('arResult',$arResult)->with('dias',$dias); 
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        //******************************************
         //OK
 	public function main($id_oferta)
         {

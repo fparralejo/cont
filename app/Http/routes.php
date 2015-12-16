@@ -45,8 +45,8 @@ Route::get('main/existeDeudor', 'mainController@existeDeudor');
 Route::post('main/nuevoDeudor', 'mainController@deudorCreate');
 
 
-////seguimiento
-//Route::get('seguimiento/{id_oferta}', 'seguimientoController@main');
+//informes
+Route::get('informes/ultdias/{dias}', 'informesController@infUltdias');
 //Route::get('seguimiento/{id_oferta}/show', 'seguimientoController@seguimientoShow');
 //Route::get('seguimiento/{id_oferta}/delete', 'seguimientoController@seguimientoDelete');
 //Route::post('seguimiento', 'seguimientoController@seguimientoCreateEdit');

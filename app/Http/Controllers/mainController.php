@@ -92,18 +92,7 @@ class mainController extends Controller {
 		//
 	}
 
-
-//	public function main_NO()
-//	{
-//        //control de sesion
-//		$login = new loginController();
-//        if (!$login->getControl()) {
-//        	return redirect('/')->with('login_errors', '<font color="#ff0000">La sesión a expirado. Vuelva a logearse..</font>');
-//        }
-//
-//		return view('md.main'); 
-//	}
-
+        
         //OK
 	public function main()
         {
@@ -115,7 +104,8 @@ class mainController extends Controller {
             
             
             //extraigo el listado de contfpp_movimientos_final
-            $mfinal = movimientosfinal::where('Fecha','>=',date('Y').'-01-01 00:00:00')->get();
+            //$mfinal = movimientosfinal::where('Fecha','>=',date('Y').'-01-01 00:00:00')->get();
+            $mfinal = movimientosfinal::where('Fecha','>=',date('Y-m-d H:i:s', strtotime('-1 year')))->get();
             $movimientosI = movimientos::all();
             
             $movimientos='';
@@ -169,6 +159,12 @@ class mainController extends Controller {
 
         //OK
         public function motivoCreate(Request $request){
+            //control de sesion
+            $login = new loginController();
+            if (!$login->getControl()) {
+                return redirect('/')->with('login_errors', '<font color="#ff0000">La sesión a expirado. Vuelva a logearse..</font>');
+            }
+            
             //busco si existe o no este motivo, si existe no se debe dar de alta e indicarlo
             $existeMotivo = motivos::where('motivo','=',$request->motivo)->count();
             if($existeMotivo>0){
@@ -216,6 +212,12 @@ class mainController extends Controller {
 
         //OK
         public function deudorCreate(Request $request){
+            //control de sesion
+            $login = new loginController();
+            if (!$login->getControl()) {
+                return redirect('/')->with('login_errors', '<font color="#ff0000">La sesión a expirado. Vuelva a logearse..</font>');
+            }
+            
             //busco si existe o no este motivo, si existe no se debe dar de alta e indicarlo
             $existeDeudor = deudores::where('deudor','=',$request->deudor)->count();
             if($existeDeudor>0){
@@ -235,35 +237,45 @@ class mainController extends Controller {
         //OK
 	public function mainShow()
         {
+            $movimientosfinal = movimientosfinal::find(Input::get('Id'));
+            //relacion con motivos
+            $motivo = movimientosfinal::find(Input::get('Id'))->motivo;
+            //relacion con deudores
+            $deudor = movimientosfinal::find(Input::get('Id'))->deudor;
             
-            $movimientosfinal = \DB::select("
-                                            SELECT F.Id,DATE_FORMAT(F.Fecha,'%d/%m/%Y') AS Fecha,F.Movimiento,M.motivo,F.Euros,D.deudor
-                                            FROM contfpp_movimientos_final F, contfpp_deudores D, contfpp_motivos M
-                                            WHERE F.Motivo=M.IdMot AND F.Deudor=D.IdDeu
-                                            AND F.Id=".Input::get('Id')."
-                                            ");
+            //preparo array para devolver datos
+            $datos['Id'] = $movimientosfinal->Id;
+            $datos['Fecha'] = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$movimientosfinal->Fecha)->format('d/m/Y');
+            $datos['Movimiento'] = $movimientosfinal->Movimiento;
+            $datos['Motivo'] = $motivo[0]->motivo;
+            $datos['Euros'] = $movimientosfinal->Euros;
+            $datos['Deudor'] = $deudor[0]->deudor;
             
 
             //devuelvo la respuesta al send
-            echo json_encode($movimientosfinal);
+            echo json_encode($datos);
         }
 
-        //NOOO
-	public function ofertasDelete(){
-            $oferta = oferta::find(Input::get('id_oferta'));
-            $IdOferta = $oferta->id_oferta;
+        //OK
+	public function mainDelete(){
+            $asiento = movimientosfinal::find(Input::get('Id'));
+            $Id = $asiento->Id;
 
-            $oferta->estado = "0";
-
-            if($oferta->save()){
-                echo "Oferta ". $IdOferta ." borrada correctamente.";
+            if($asiento->delete()){
+                echo "Asiento ". $Id ." borrado.";
             }else{
-                echo "Oferta ". $IdOferta ." NO ha sido borrada.";
+                echo "Asiento ". $Id ." NO ha sido borrado.";
             }
 	}
         
         //OK
         public function mainCreateEdit(Request $request){
+            //control de sesion
+            $login = new loginController();
+            if (!$login->getControl()) {
+                return redirect('/')->with('login_errors', '<font color="#ff0000">La sesión a expirado. Vuelva a logearse..</font>');
+            }
+            
             
             //si es nuevo este valor viene vacio
             if($request->Id === ""){

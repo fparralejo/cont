@@ -55,12 +55,12 @@
           success: function(data) {
             var asiento = JSON.parse(data);
             //var asiento = data;
-            $('#Id').val(asiento[0].Id);
-            $('#fecha').val(asiento[0].Fecha);
-            $('#movimientos').val(asiento[0].Movimiento);
-            $('#euros').val(asiento[0].Euros);
-            $('#motivos').val(asiento[0].motivo);
-            $('#deudor').val(asiento[0].deudor);
+            $('#Id').val(asiento.Id);
+            $('#fecha').val(asiento.Fecha);
+            $('#movimientos').val(asiento.Movimiento);
+            $('#euros').val(asiento.Euros);
+            $('#motivos').val(asiento.Motivo);
+            $('#deudor').val(asiento.Deudor);
             //cambiar nombre del titulo del formulario
             $("#tituloForm").html('Editar Datos');
             $("#submitir").val('OK');
@@ -335,25 +335,6 @@
                     <div class="col-sm-8">
                         <input type="text" class="form-control" 
                         id="motivo" name="motivo" placeholder="Nuevo Motivo"/>
-                    </div>
-                  </div>
-                    
-                  <div class="form-group">
-                    <label class="col-sm-2 control-label"
-                          for="inputPassword3" >Password</label>
-                    <div class="col-sm-10">
-                        <input type="password" class="form-control"
-                            id="inputPassword3" placeholder="Password"/>
-                    </div>
-                  </div>
-                    
-                  <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                      <div class="checkbox">
-                        <label>
-                            <input type="checkbox"/> Remember me
-                        </label>
-                      </div>
                     </div>
                   </div>
                     
