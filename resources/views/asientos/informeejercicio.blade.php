@@ -52,12 +52,13 @@
 
 
 
-        function volverMeses(){
-            window.location='../../';
+        function volver(){
+            window.location = '{{ URL::asset("main") }}';
         }
         
         function calcular(ejercicio){
-            window.location='../mesesEjercicio/'+ejercicio;
+            //window.location='../mesesEjercicio/'+ejercicio;
+            window.location='{{ URL::asset("informes/mesesEjercicio") }}/'+ejercicio;
         }
 
         
@@ -80,8 +81,8 @@
     <thead>
         <tr>
             <th></th>
-            <th>Ingreso</th>
-            <th>Gasto</th>
+            <th><div align="right">Ingreso</div></th>
+            <th><div align="right">Gasto</div></th>
         </tr>
     </thead>
     <tbody>
