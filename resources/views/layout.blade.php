@@ -71,9 +71,9 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Informes<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a href="{{ URL::asset('informes/ultdias/30') }}">Ultimos 30 Días</a></li>
-                  <li><a href="{{ URL::asset('informes/Ult365') }}">Ultimos 365 Días</a></li>
+                  <li><a href="{{ URL::asset('informes/ultdias/365') }}">Ultimos 365 Días</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="{{ URL::asset('informes/mesesEjercicio') }}">Meses por Años</a></li>
+                  <li><a href="{{ URL::asset('informes/mesesEjercicio/'.date('Y')) }}">Meses por Años</a></li>
                 </ul>            
             </li>
             <li class="dropdown">
@@ -112,9 +112,9 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Informes<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a href="{{ URL::asset('informes/ultdias/30') }}">Ultimos 30 Días</a></li>
-                  <li><a href="{{ URL::asset('informes/Ult365') }}">Ultimos 365 Días</a></li>
+                  <li><a href="{{ URL::asset('informes/ultdias/365') }}">Ultimos 365 Días</a></li>
                   <li role="separator" class="divider"></li>
-                  <li><a href="{{ URL::asset('informes/mesesEjercicio') }}">Meses por Años</a></li>
+                  <li><a href="{{ URL::asset('informes/mesesEjercicio/'.date('Y')) }}">Meses por Años</a></li>
                 </ul>            
             </li>
             <li class="dropdown">

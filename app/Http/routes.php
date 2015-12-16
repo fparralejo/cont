@@ -47,19 +47,4 @@ Route::post('main/nuevoDeudor', 'mainController@deudorCreate');
 
 //informes
 Route::get('informes/ultdias/{dias}', 'informesController@infUltdias');
-//Route::get('seguimiento/{id_oferta}/show', 'seguimientoController@seguimientoShow');
-//Route::get('seguimiento/{id_oferta}/delete', 'seguimientoController@seguimientoDelete');
-//Route::post('seguimiento', 'seguimientoController@seguimientoCreateEdit');
-//
-////entrevistas
-//Route::get('entrevistas/{id_oferta}', 'entrevistasController@main');
-//Route::get('entrevistas/{id_oferta}/show', 'entrevistasController@entrevistaShow');
-//Route::get('entrevistas/{id_oferta}/delete', 'entrevistasController@entrevistaDelete');
-//Route::post('entrevistas', 'entrevistasController@entrevistaCreateEdit');
-//
-////web trabajo
-//Route::get('web', 'webController@main');
-//Route::get('web/show', 'webController@webShow');
-//Route::get('web/delete', 'webController@webDelete');
-//Route::post('web', 'webController@webCreateEdit');
-//
+Route::get('informes/mesesEjercicio/{year}', 'informesController@infMesesYear');

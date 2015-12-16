@@ -170,38 +170,115 @@ class informesController extends Controller {
             return view('asientos.informedias')->with('arResult',$arResult)->with('dias',$dias); 
         }
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        //******************************************
         //OK
-	public function main($id_oferta)
+        public function infMesesYear($year)
         {
             //control de sesion
             $login = new loginController();
             if (!$login->getControl()) {
                 return redirect('/')->with('login_errors', '<font color="#ff0000">La sesión a expirado. Vuelva a logearse..</font>');
             }
+
+            $datos = $this->calculoMesesYear($year);
             
-            $listado = seguimiento::where("id_oferta","=",$id_oferta)
-                                                 ->where("estado","=","1")
-                                                 ->get();
-            
-            $oferta = oferta::where("id_oferta","=",$id_oferta)
-                                                 ->where("estado","=","1")
-                                                 ->get();
-            //var_dump($oferta);die;
-            
-            return view('seguimiento/main')->with('listado',$listado)->with('oferta',$oferta); 
+            //var_dump($datos);die;
+
+            return view('asientos.informeejercicio')->with('arResult',$datos);
         }
 
+        public function calculoMesesYear($year)
+        {
+            //control de sesion
+            $login = new loginController();
+            if (!$login->getControl()) {
+                return redirect('/')->with('login_errors', '<font color="#ff0000">La sesión a expirado. Vuelva a logearse..</font>');
+            }
+
+            $result=\DB::table('contfpp_movimientos_final')->leftjoin('contfpp_deudores','contfpp_deudores.IdDeu','=','contfpp_movimientos_final.Deudor')
+                                                          ->leftjoin('contfpp_motivos','contfpp_motivos.IdMot','=','contfpp_movimientos_final.Motivo')
+                                                          ->leftjoin('contfpp_movimientos','contfpp_movimientos.IdMov','=','contfpp_movimientos_final.Movimiento')
+                                                          ->where(\DB::raw("DATE_FORMAT(contfpp_movimientos_final.Fecha,'%Y')"),'=',"$year")
+                                                          ->get(array(\DB::raw("DATE_FORMAT(contfpp_movimientos_final.Fecha,'%m') AS Mes"),\DB::raw("IF(contfpp_movimientos.movimiento='Ingreso',contfpp_movimientos_final.Euros,0) AS Ingreso"),
+                                                                      \DB::raw("IF(contfpp_movimientos.movimiento='Gasto',contfpp_movimientos_final.Euros,0) AS Gasto")));
+
+            $resultadoInt = array();
+            foreach ($result as $key => $value) {
+                $resultadoInt[$key]['Mes'] = $value->Mes;
+                $resultadoInt[$key]['Ingreso'] = $value->Ingreso;
+                $resultadoInt[$key]['Gasto'] = $value->Gasto;
+            }         
+
+            //ahora hago la suma de ingreso y gasto por meses
+            $mes=array(
+                "Ingreso"=>0,
+                "Gasto"=>0
+            );
+            $datos=array(
+                "Ejercicio"=>$year,
+                "Enero"=>$mes,
+                "Febrero"=>$mes,
+                "Marzo"=>$mes,
+                "Abril"=>$mes,
+                "Mayo"=>$mes,
+                "Junio"=>$mes,
+                "Julio"=>$mes,
+                "Agosto"=>$mes,
+                "Septiembre"=>$mes,
+                "Octubre"=>$mes,
+                "Noviembre"=>$mes,
+                "Diciembre"=>$mes
+            );
+
+            //ahora recorro todos los rows y voy sumando segun el mes que sea y si es ingreso o gasto
+            for($i=0;$i<count($resultadoInt);$i++){
+                if($resultadoInt[$i]['Mes']==='01'){//Enero
+                    $datos['Enero']['Ingreso']=$datos['Enero']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Enero']['Gasto']=$datos['Enero']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='02'){//Febrero
+                    $datos['Febrero']['Ingreso']=$datos['Febrero']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Febrero']['Gasto']=$datos['Febrero']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='02'){//Febrero
+                    $datos['Febrero']['Ingreso']=$datos['Febrero']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Febrero']['Gasto']=$datos['Febrero']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='03'){//Marzo
+                    $datos['Marzo']['Ingreso']=$datos['Marzo']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Marzo']['Gasto']=$datos['Marzo']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='04'){//Abril
+                    $datos['Abril']['Ingreso']=$datos['Abril']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Abril']['Gasto']=$datos['Abril']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='05'){//Mayo
+                    $datos['Mayo']['Ingreso']=$datos['Mayo']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Mayo']['Gasto']=$datos['Mayo']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='06'){//Junio
+                    $datos['Junio']['Ingreso']=$datos['Junio']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Junio']['Gasto']=$datos['Junio']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='07'){//Julio
+                    $datos['Julio']['Ingreso']=$datos['Julio']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Julio']['Gasto']=$datos['Julio']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='08'){//Agosto
+                    $datos['Agosto']['Ingreso']=$datos['Agosto']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Agosto']['Gasto']=$datos['Agosto']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='09'){//Septiembre
+                    $datos['Septiembre']['Ingreso']=$datos['Septiembre']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Septiembre']['Gasto']=$datos['Septiembre']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='10'){//Octubre
+                    $datos['Octubre']['Ingreso']=$datos['Octubre']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Octubre']['Gasto']=$datos['Octubre']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='11'){//Noviembre
+                    $datos['Noviembre']['Ingreso']=$datos['Noviembre']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Noviembre']['Gasto']=$datos['Noviembre']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }else if($resultadoInt[$i]['Mes']==='12'){//Diciembre
+                    $datos['Diciembre']['Ingreso']=$datos['Diciembre']['Ingreso']+$resultadoInt[$i]['Ingreso'];
+                    $datos['Diciembre']['Gasto']=$datos['Diciembre']['Gasto']+$resultadoInt[$i]['Gasto'];
+                }
+            }
+
+            return $datos;
+        }
+
+        
+        
+        //******************************************
         //OK
 	public function seguimientoShow()
         {

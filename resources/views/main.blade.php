@@ -153,7 +153,7 @@
 </script>
 
 
- aviso de alguna accion 
+<!-- aviso de alguna accion -->
 <div class="alert alert-success" role="alert" id="accionTabla" style="display: none; ">
 </div>
 

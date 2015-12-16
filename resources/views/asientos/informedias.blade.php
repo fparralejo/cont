@@ -54,7 +54,7 @@
 </script>
 
 
- aviso de alguna accion 
+ <!--aviso de alguna accion--> 
 <div class="alert alert-success" role="alert" id="accionTabla" style="display: none; ">
 </div>
 
@@ -69,6 +69,7 @@ $fechaDesde=date('d/m/Y',mktime(0,0,0,date('m'),date('d')-$dias,date('Y')));
 $fechaHasta=date('d/m/Y');
 ?>
 
+<h4>Desde {{ $fechaDesde }} hasta {{ $fechaHasta }}</h4>
 <table id="ejemplo1" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
     <thead>
         <tr>
@@ -101,7 +102,7 @@ $fechaHasta=date('d/m/Y');
                 </div>
             </td>
             <td class="sgsiRow" onClick="">
-                <div align="right">
+                <div align="left">
                     {{ $arResult[$i]['deudor'] }}
                 </div>
             </td>
@@ -117,9 +118,9 @@ $fechaHasta=date('d/m/Y');
 <div align="center">
     <table class="table table-striped table-bordered table-hover" style="width: 40%;">
         <tr style="background-color: #81a8cb;">
-            <th align="center">Ingreso</th>
-            <th align="center">Gasto</th>
-            <th align="center">Saldo</th>
+            <th><div align="center">Ingreso</div></th>
+            <th><div align="center">Gasto</div></th>
+            <th><div align="center">Saldo</div></th>
         </tr>
         <tr style="background-color: #CDF2E6;">
             <td class="sgsiRow" align="center">{{ number_format($ingreso,2) }}</td>
