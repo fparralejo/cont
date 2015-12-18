@@ -59,9 +59,9 @@
 
 
 
-        function volver(){
-            window.location = '{{ URL::asset("main") }}';
-        }
+//        function volver(){
+//            window.location = '{{ URL::asset("main") }}';
+//        }
         
         function calcular(ejercicio){
             //window.location='../mesesEjercicio/'+ejercicio;
@@ -223,11 +223,11 @@
             <td class="sgsiRow" align="center">{{ number_format($gasto,2) }}</td>
             <td class="sgsiRow" align="center">{{ number_format($ingreso-$gasto,2) }}</td>
         </tr>
-        <tr>
+<!--        <tr>
             <td colspan="3" align="center">
                 <input type="button" class="btn btn-default" name="Volver" value="Volver" onClick="volver();" />
             </td>
-        </tr>
+        </tr>-->
     </table>
 </div>
 

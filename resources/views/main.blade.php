@@ -253,7 +253,7 @@
             <label for="movimientos">Ingreso/Gasto:</label>
             <select class="form-control" id="movimientos" name="movimientos">
                 <option value="1">Ingreso</option>
-                <option value="2">Gasto</option>
+                <option value="2" selected>Gasto</option>
             </select>
         </div>
     </div>
@@ -267,30 +267,30 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-xs-8 col-md-6">
             <div class="form-group">
                 <label for="motivos">Motivo:</label>
                 <input type="text" class="form-control" id="motivos" name="motivos" onblur="existeMotivo(this);">
             </div>
         </div>
-        <div class="col-md-1">
+        <div class="col-xs-1 col-md-1">
                 <label for="">&nbsp;</label>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#formMotivo">
+                <button class="btn btn-default" data-toggle="modal" data-target="#formMotivo">
                     Nuevo
                 </button>
         </div>
     </div>
     
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-xs-8 col-md-6">
             <div class="form-group">
                 <label for="deudor">Deudor:</label>
                 <input type="text" class="form-control" id="deudor" name="deudor" onblur="existeDeudor(this);">
             </div>
         </div>
-        <div class="col-md-1">
+        <div class="col-xs-1 col-md-1">
                 <label for="">&nbsp;</label>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#formDeudor">
+                <button class="btn btn-default" data-toggle="modal" data-target="#formDeudor">
                     Nuevo
                 </button>
         </div>
@@ -301,7 +301,7 @@
 
 
     <input type="hidden" id="Id" name="Id" value="" />
-    <input type="submit" id="submitir" class="btn btn-default" value="Nuevo"/>
+    <input type="submit" id="submitir" class="btn btn-primary" value="Nuevo"/>
 </form>
 
 
