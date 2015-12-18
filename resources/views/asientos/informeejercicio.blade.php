@@ -2,7 +2,7 @@
 
 
 @section('principal')
-<h3 class="page-header">Movimiento Meses {{ $arResult['Ejercicio'] }}</h3>
+<h4 class="page-header">Movimiento Meses {{ $arResult['Ejercicio'] }}</h4>
 
 <div class="row">
     <div class="col-sm-2 col-sm-offset-4">

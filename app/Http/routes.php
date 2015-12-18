@@ -48,3 +48,7 @@ Route::post('main/nuevoDeudor', 'mainController@deudorCreate');
 //informes
 Route::get('informes/ultdias/{dias}', 'informesController@infUltdias');
 Route::get('informes/mesesEjercicio/{year}', 'informesController@infMesesYear');
+
+
+//graficas
+Route::get('graficas/meses/{year}', 'graficasController@graficasMeses');

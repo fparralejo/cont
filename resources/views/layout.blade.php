@@ -20,7 +20,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.10.0/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<!--    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />-->
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="{{URL::asset('js/docs.min.js')}}"></script>
@@ -41,7 +41,6 @@
     <link href="{{URL::asset('css/dashboard.css')}}" rel="stylesheet">
 
     
-    @yield('head')
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -67,7 +66,10 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
+
+            @include('includes.menu')
+              
+<!--            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Informes<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a href="{{ URL::asset('informes/ultdias/30') }}">Ultimos 30 Días</a></li>
@@ -98,7 +100,8 @@
                   <li><a href="{{ URL::asset('graficas/meses/2016') }}">2016</a></li>
                 </ul>
             </li>
-            <li><a href="{{ URL::asset('logout') }}">Salir</a></li>
+            <li><a href="{{ URL::asset('logout') }}">Salir</a></li>-->
+            
           </ul>
         </div>
       </div>
@@ -108,7 +111,10 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="dropdown">
+              
+            @include('includes.menu')
+            
+<!--            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Informes<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a href="{{ URL::asset('informes/ultdias/30') }}">Ultimos 30 Días</a></li>
@@ -139,13 +145,14 @@
                   <li><a href="{{ URL::asset('graficas/meses/2016') }}">2016</a></li>
                 </ul>
             </li>
-            <li><a href="{{ URL::asset('logout') }}">Salir</a></li>
+            <li><a href="{{ URL::asset('logout') }}">Salir</a></li>-->
+            
           </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
           @yield('submenu')
-          <hr/>
+<!--          <hr/>-->
           @yield('principal')
 
         </div>

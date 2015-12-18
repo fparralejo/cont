@@ -2,7 +2,7 @@
 
 
 @section('principal')
-<h3 class="page-header">Listado</h3>
+<h4 class="page-header">Informe</h4>
 
 <style>
     .sgsiRow:hover{
