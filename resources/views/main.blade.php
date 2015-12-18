@@ -25,10 +25,10 @@
                 "sInfoFiltered": "(filtrados _MAX_ total registros)",
                 "sSearch": "Busqueda:",
                 "oPaginate": { 
-                    "sLast": "Última página", 
-                    "sFirst": "Primera", 
-                    "sNext": "Siguiente", 
-                    "sPrevious": "Anterior" 
+                    "sLast": ">>", 
+                    "sFirst": "<<", 
+                    "sNext": "<", 
+                    "sPrevious": ">" 
                 }
             },
             "bSort":true,

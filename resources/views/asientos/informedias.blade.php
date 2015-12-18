@@ -14,7 +14,7 @@
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
         $('#ejemplo1').dataTable({
-        	"responsive": true,
+            "responsive": true,
             "bProcessing": true,
             "sPaginationType":"full_numbers",
             "oLanguage": {
@@ -25,10 +25,10 @@
                 "sInfoFiltered": "(filtrados _MAX_ total registros)",
                 "sSearch": "Busqueda:",
                 "oPaginate": { 
-                    "sLast": "Última página", 
-                    "sFirst": "Primera", 
-                    "sNext": "Siguiente", 
-                    "sPrevious": "Anterior" 
+                    "sLast": ">>", 
+                    "sFirst": "<<", 
+                    "sNext": "<", 
+                    "sPrevious": ">" 
                 }
             },
             "bSort":true,
